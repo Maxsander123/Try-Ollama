@@ -27,6 +27,17 @@ function install_ollama_openwebui {
     cd ../../
 }
 
+function install_models {
+    echo "Installiere Ollama-Modelle: LLaMA 3.2 und Mistral..." | tee -a $LOGFILE
+    source $VENV/bin/activate
+
+    # LLaMA 3.2
+    ollama run llama3.2 || echo "Fehler beim Installieren von LLaMA 3.2" | tee -a $LOGFILE
+
+    # Mistral
+    ollama run mistral || echo "Fehler beim Installieren von Mistral" | tee -a $LOGFILE
+}
+
 function start_services {
     echo "Starte Ollama und OpenWebUI..." | tee -a $LOGFILE
     source $VENV/bin/activate
@@ -45,6 +56,7 @@ function install {
     install_dependencies
     create_venv
     install_ollama_openwebui
+    install_models
     start_services
     schedule_self_destruction
     echo "Installation abgeschlossen." | tee -a $LOGFILE
