@@ -4,11 +4,12 @@ DIR="Ollama-Tryout"
 VENV="$DIR/venv"
 SELF_DESTRUCT_TIMER=172800  # 48 Stunden in Sekunden
 LOGFILE="$DIR/install.log"
+OPENWEBUI_ZIP="https://github.com/openwebui/openwebui/archive/refs/heads/main.zip"
 
 function install_dependencies {
     echo "Installiere Abhängigkeiten..." | tee -a $LOGFILE
     sudo apt update
-    sudo apt install -y python3 python3-venv python3-pip build-essential libssl-dev libffi-dev python3-dev git wget at
+    sudo apt install -y python3 python3-venv python3-pip build-essential libssl-dev libffi-dev python3-dev wget unzip at
 }
 
 function create_venv {
@@ -18,10 +19,17 @@ function create_venv {
 }
 
 function install_ollama_openwebui {
-    echo "Installiere Ollama und OpenWebUI..." | tee -a $LOGFILE
+    echo "Installiere Ollama..." | tee -a $LOGFILE
     pip install --upgrade pip
     pip install ollama
-    git clone https://github.com/openwebui/openwebui.git $DIR/openwebui
+
+    echo "Lade OpenWebUI herunter..." | tee -a $LOGFILE
+    wget -O $DIR/openwebui.zip $OPENWEBUI_ZIP
+    unzip -o $DIR/openwebui.zip -d $DIR/
+    mv $DIR/openwebui-main $DIR/openwebui
+    rm $DIR/openwebui.zip
+
+    echo "Installiere OpenWebUI..." | tee -a $LOGFILE
     cd $DIR/openwebui
     pip install -r requirements.txt
     cd ../../
